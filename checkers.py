@@ -1,5 +1,4 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -13,20 +12,48 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.point = None
-        self.pushButton_00.clicked.connect(self.run)
+        for abstract_button in self.buttonGroup.buttons():
+            abstract_button.clicked.connect(self.run)
         self.new_gameButton.clicked.connect(self.new_game)
-        self.game = Board()
-        print(type(self.game.desk[0][1]) == BlackShashka)
 
 
     def new_game(self):
         self.game = Board()
+        self.player = WhiteShashka
+        self.departure, self.arrival = False, False
         self.update()
 
 
     def run(self):
-        self.point = True
+        inter = self.sender().objectName().split('_')[1]
+        y, x = int(inter[0]), int(inter[1])
+        if not self.departure:
+            if type(self.game.desk[y][x]) == self.player:
+                self.departure = self.game.desk[y][x]
+            return
+        verdict = self.departure.hod(self.game.desk, x, y)
+        if verdict:
+            if verdict[1]:
+                print(1)
+                x0, y0 = self.departure.koords
+                x1, y1 =  verdict[2]
+                x2, y2 = verdict[0]
+                self.game.desk[y2][x2] = self.player(x2, y2)
+                self.game.desk[x0][y0] = 0
+                self.game.desk[y1][x1] = 0
+            else:
+                x0, y0 = self.departure.koords
+                x2, y2 = verdict[0]
+                self.game.desk[y2][x2] = self.player(x2, y2)
+                self.game.desk[x0][y0] = 0
+                if self.player == WhiteShashka:
+                    self.player = BlackShashka
+                else:
+                    self.player = WhiteShashka
+        verdict = False
+        self.departure = False
         self.update()
+                
 
 
     def paintEvent(self, event):
@@ -65,5 +92,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MainWindow()
+    ex.new_game()
     ex.show()
     sys.exit(app.exec_())

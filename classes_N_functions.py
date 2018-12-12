@@ -14,68 +14,53 @@ mas = masWhit + masBlak
 
 
 class WhiteShashka():
-    def __init__(self, x, y):
+    def __init__(self, y, x):
         self.koords = [x, y]
     
     
-    def hod(self, x, y):
-        global mas
-        x0, y0 = self.koords
-        if [x, y] in mas:
-            return -1
-        if abs(x - x0) > 2 or abs(y - y0) > 2:
-            return -1
+    def hod(self, board, x, y):
+        y0, x0 = self.koords
+        if x0 == x and y0 == y:
+            return False
+        if board[y][x] != 0:
+            return False
+        if abs(x - x0) > 2 or abs(y - y0) > 2 or abs(x - x0) != abs(y - y0):
+            return False
         if abs(x - x0) == 2:
-            if x < x0:
-                x1 = x + 1
-            else:
-                x1 = x - 1
-            if y < y0:
-                y1 = y + 1
-            else:
-                y1 = y - 1
-            if [x1, y1] in masBlak:
-                delit(x1, y1)
-                setmove(self, x, y)
-                return 0
-            else:
-                return -1
-        setmove(self, x, y)
-        return 0
-
+            x1, y1 = abs(x + x0)//2, abs(y + y0)//2
+            #print([str(x), str(y), str(x0), str(y0), str(x1), str(y1)])
+            if type(board[y1][x1]) == BlackShashka:
+                return ((x, y), True, (x1, y1))
+            return False
+        if abs(x - x0) == 1:
+            if board[y][x] == 0:
+                return ((x, y), False)
+            return False
 
 
 class BlackShashka():
-    def __init__(self, x, y):
+    def __init__(self, y, x):
         self.koords = [x, y]
     
     
-    def hod(self, x, y):
-        global mas
-        x0, y0 = self.koords
+    def hod(self, board, x, y):
+        y0, x0 = self.koords
         if x0 == x and y0 == y:
-            changeCvet()
-        if [x, y] in mas:
-            return -1
-        if abs(x - x0) > 2 or abs(y - y0) > 2:
-            return -1
+            return False
+        if board[y][x] != 0:
+            return False
+        if abs(x - x0) > 2 or abs(y - y0) > 2 or abs(x - x0) != abs(y - y0):
+            return False
         if abs(x - x0) == 2:
-            if x < x0:
-                x1 = x + 1
-            else:
-                x1 = x - 1
-            if y < y0:
-                y1 = y + 1
-            else:
-                y1 = y - 1
-            if [x1, y1] in masWhit:
-                delit(x1, y1)
-                setmove(self, x, y)
-                return 0
-            else:
-                return -1
-        setmove(self, x, y)
-        return 0
+            #print([str(x), str(y), str(x0), str(y0), str(x1), str(y1)])
+            x1, y1 = abs(x + x0)//2, abs(y + y0)//2
+            if type(board[y1][x1]) == WhiteShashka:
+                return ((x, y), True, (x1, y1))
+            return False
+        if abs(x - x0) == 1:
+            if board[y][x] == 0:
+                return ((x, y), False)
+            return False
 
 
 hodit = 0 #белые код 0; черные код 1
@@ -110,7 +95,7 @@ class Board():
         for i in range(8):
             for j in range(8):
                 if self.desk[i][j] == 2:
-                    self.desk[i][j] = BlackShashka(i, j)
+                    self.desk[i][j] = BlackShashka(j, i)
                 elif self.desk[i][j] == 1:
-                    self.desk[i][j] = WhiteShashka(i, j)
+                    self.desk[i][j] = WhiteShashka(j, i)
 a = Board()
