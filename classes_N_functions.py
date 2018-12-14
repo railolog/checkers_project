@@ -1,18 +1,3 @@
-def sum_mas(mas):
-    S = []
-    for i in mas:
-        S += i
-    return mas
-
-
-
-masWhit = sum_mas([[[(j + i%2 + 1) % 8, i] for j in range(0, 8, 2)]
-                    for i in range(4)])
-masBlak = sum_mas([[[(j + i%2 + 1) % 8, 7 - i] for j in range(0, 8, 2)]
-                    for i in range(4)])
-mas = masWhit + masBlak
-
-
 class WhiteShashka():
     def __init__(self, y, x):
         self.koords = [x, y]
@@ -63,26 +48,6 @@ class BlackShashka():
             return False
 
 
-hodit = 0 #белые код 0; черные код 1
-
-
-def hodit(self):
-    global hodit
-    if self.kod != hodit:
-        return -1
-    changeCvet()
-    x, y = askKoordsHoda()
-    self.hod(x, y)
-    return 0
-
-
-#while mas != []:
-#    x, y, self = askKoordsHoda()
-#    while hodit(self) == -1:
-#        x, y, self = askKoordsHoda()
-a = [0, BlackShashka(0, 2)]
-
-
 class Board():
     def __init__(self):
         self.desk = [[0, 2] * 4,
@@ -98,4 +63,3 @@ class Board():
                     self.desk[i][j] = BlackShashka(j, i)
                 elif self.desk[i][j] == 1:
                     self.desk[i][j] = WhiteShashka(j, i)
-a = Board()
