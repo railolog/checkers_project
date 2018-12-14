@@ -34,7 +34,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         verdict = self.departure.hod(self.game.desk, x, y)
         if verdict:
             if verdict[1]:
-                print(1)
                 x0, y0 = self.departure.koords
                 x1, y1 =  verdict[2]
                 x2, y2 = verdict[0]
