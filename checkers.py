@@ -24,6 +24,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.departure, self.arrival = False, False
         # Клетки старта и прибытия шашки пока неизвестны
         self.update()                  # Перерисовываем поле
+        i, okBtnPressed = QInputDialog.getText(
+            self, "Введите имя", "Имя играющего за белых"
+        )
+        if okBtnPressed:
+            self.player_white.setText(i)
+        i, okBtnPressed = QInputDialog.getText(
+            self, "Введите имя", "Имя играющего за черных"
+        )
+        if okBtnPressed:
+            self.player_black.setText(i)
 
     def run(self):
         inter = self.sender().objectName().split('_')[1]  # Какая кнопка нажата
