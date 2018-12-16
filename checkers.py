@@ -14,28 +14,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.point = None
         for abstract_button in self.buttonGroup.buttons():
             abstract_button.clicked.connect(self.run)
+            # Реакция на нажатие на поле
         self.new_gameButton.clicked.connect(self.new_game)
-
+        # Кнопка начала новой игры
 
     def new_game(self):
-        self.game = Board()
-        self.player = WhiteShashka
+        self.game = Board()            # Создаем начальное поле
+        self.player = WhiteShashka     # Первый ход у белых шашек
         self.departure, self.arrival = False, False
-        self.update()
-
+        # Клетки старта и прибытия шашки пока неизвестны
+        self.update()                  # Перерисовываем поле
 
     def run(self):
-        inter = self.sender().objectName().split('_')[1]
-        y, x = int(inter[0]), int(inter[1])
+        inter = self.sender().objectName().split('_')[1]  # Какая кнопка нажата
+        y, x = int(inter[0]), int(inter[1])              # Получаем координаты
         if not self.departure:
+            # Если шашка, которая ходит не выбрана
             if type(self.game.desk[y][x]) == self.player:
+                # Проверка того, кто ходит
                 self.departure = self.game.desk[y][x]
             return
         verdict = self.departure.hod(self.game.desk, x, y)
-        if verdict:
+        # Осуществляем проверки
+        if verdict:       # Осуществляем проверки
             if verdict[1]:
+                print(1)
                 x0, y0 = self.departure.koords
-                x1, y1 =  verdict[2]
+                x1, y1 = verdict[2]
                 x2, y2 = verdict[0]
                 self.game.desk[y2][x2] = self.player(x2, y2)
                 self.game.desk[x0][y0] = 0
@@ -52,15 +57,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         verdict = False
         self.departure = False
         self.update()
-                
-
+        if not any(WhiteShashka == type(i) for j in self.game.desk for i in j):
+            self.label.setText('Black Wins!!!')
+        elif not any(BlackShashka == type(i) for j in
+                     self.game.desk for i in j):
+            self.label.setText('White Wins!!!')
 
     def paintEvent(self, event):
         qp = QPainter()
         qp.begin(self)
         self.draw_cell(qp)
         qp.end()
-
 
     def draw_cell(self, qp):
         qp.setBrush(QColor(254, 246, 201))
@@ -85,7 +92,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     qp.drawEllipse(172 + 81 * y, 122 + 81 * x, 78, 78)
                 elif self.color == WhiteShashka:
                     qp.setBrush(QColor(255, 255, 255))
-                    qp.drawEllipse(172 + 81 * y, 122 + 81 * x, 78, 78)                    
+                    qp.drawEllipse(172 + 81 * y, 122 + 81 * x, 78, 78)
 
 
 if __name__ == '__main__':
