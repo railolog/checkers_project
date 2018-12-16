@@ -5,13 +5,14 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from design import Ui_MainWindow
 from classes_N_functions import *
+d = {}
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.point = None
+        self.setWindowTitle('Шашки')
         for abstract_button in self.buttonGroup.buttons():
             abstract_button.clicked.connect(self.run)
             # Реакция на нажатие на поле
@@ -24,16 +25,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.departure, self.arrival = False, False
         # Клетки старта и прибытия шашки пока неизвестны
         self.update()                  # Перерисовываем поле
+        global d
         i, okBtnPressed = QInputDialog.getText(
             self, "Введите имя", "Имя играющего за белых"
         )
         if okBtnPressed:
             self.player_white.setText(i)
+            d[WhiteShashka] = i
         i, okBtnPressed = QInputDialog.getText(
             self, "Введите имя", "Имя играющего за черных"
         )
         if okBtnPressed:
             self.player_black.setText(i)
+            d[BlackShashka] = i
 
     def run(self):
         inter = self.sender().objectName().split('_')[1]  # Какая кнопка нажата
@@ -48,7 +52,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Осуществляем проверки
         if verdict:       # Осуществляем проверки
             if verdict[1]:
-                print(1)
                 x0, y0 = self.departure.koords
                 x1, y1 = verdict[2]
                 x2, y2 = verdict[0]
@@ -68,10 +71,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.departure = False
         self.update()
         if not any(WhiteShashka == type(i) for j in self.game.desk for i in j):
-            self.label.setText('Black Wins!!!')
+            self.label.setText(d[BlackShashka] + ' выиграл!!!')
         elif not any(BlackShashka == type(i) for j in
                      self.game.desk for i in j):
-            self.label.setText('White Wins!!!')
+            self.label.setText(d[WhiteShashka] + ' выиграл!!!')
 
     def paintEvent(self, event):
         qp = QPainter()
